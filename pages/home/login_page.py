@@ -20,7 +20,6 @@ class LoginPage(SeleniumDriver):
 
     def clickLoginLink(self):
         self.elementClick(self._login_link, "linktext")
-        self.log.debug("element clicked;.;.;.;.;.")
 
     def enterEmail(self, username):
         self.sendKeys(self._email_field, username)
@@ -44,3 +43,12 @@ class LoginPage(SeleniumDriver):
     def verifyLoginFailed(self):
         result = self.isElementPresent("//div[contains(text(),'Invalid email or password.')]", locatorType="xpath")
         return result
+
+    def getTitle(self):
+        return self.driver.title
+
+    def verifyTitle(self):
+        if "Let's Kode It####" in self.getTitle():
+            return True
+        else:
+            return False

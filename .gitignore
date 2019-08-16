@@ -1,0 +1,7 @@
+*.pyc
+*.iml
+*.log
+*idea*
+*.xml
+.DS_store
+.idea/vcs.xml
