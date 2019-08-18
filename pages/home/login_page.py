@@ -3,9 +3,10 @@ from selenium import webdriver
 from base.selenium_driver import SeleniumDriver
 import utilities.custom_logger as cl
 import logging
+from base.basepage import Basepage
 
 
-class LoginPage(SeleniumDriver):
+class LoginPage(Basepage):
     log = cl.customLogger(logLevel=logging.DEBUG)
 
     def __init__(self, driver):
@@ -47,8 +48,5 @@ class LoginPage(SeleniumDriver):
     def getTitle(self):
         return self.driver.title
 
-    def verifyTitle(self):
-        if "Let's Kode It####" in self.getTitle():
-            return True
-        else:
-            return False
+    def verifyLoginTitle(self):
+        return self.verifyPageTitle("Google")

@@ -13,6 +13,9 @@ class SeleniumDriver():
     log = cl.customLogger(logLevel=logging.DEBUG)
 
     def __init__(self, driver):
+        """
+        :param driver:set driver for this class
+        """
         self.driver = driver
 
     def getByType(self, locatorType):
@@ -150,12 +153,16 @@ class SeleniumDriver():
                 "Waiting Done for locator: {} and locatorType: {}. Element Not Present!!!".format(locator, locatorType))
             traceback.self.log.info_stack()
 
-    def saveScreenShot(self):
+    def saveScreenShot(self, test_name, result_message):
         try:
-            file_location = os.getcwd() + "/../Screenshots/" + strftime("%d-%m-%y_%H:%M:%S", localtime()) + ".png"
-            self.log.info("Taking Screenshot to-> {}".format(file_location))
-            self.driver.save_screenshot(file_location)
-            self.log.info("Screenshot taken in-> {}".format(file_location))
+            dir_location = os.getcwd() + "/Screenshots/" + test_name + "/"
+            os.makedirs(dir_location, exist_ok=True)
+            file_name = result_message + strftime("%d-%m-%y_%H:%M:%S", localtime()) + ".png"
+
+            file_path = os.path.join(dir_location, file_name)
+            self.log.info("Taking Screenshot to-> {}".format(file_path))
+            self.driver.save_screenshot(file_path)
+            self.log.info("Screenshot taken in-> {}".format(file_path))
         except:
             self.log.info("Something went wrong while taking a Screenshot!!!")
             traceback.self.log.info_stack()
@@ -182,3 +189,6 @@ class SeleniumDriver():
                 "Entering the Data: {} FAILED to the locator: {}  and locatorType: {}".format(dataToEnter, locator,
                                                                                               locatorType))
             traceback.self.log.info_stack()
+
+    def getTitle(self):
+        return self.driver.title

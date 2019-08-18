@@ -30,14 +30,14 @@ class TestLoginTests():
         self.driver.get(self.baseUrl)
         self.lp.login("test@email.com", "abcabc")
         result = self.lp.verifyLoginSuccessful()
-        self.ts.markFinal(result, "Invalid login verified", inspect.stack()[0][3])
+        self.ts.markFinal(result, "Invalid login verification", testName=inspect.stack()[0][3])
 
+    @pytest.mark.karthik
     @pytest.mark.run(order=1)
     def test_validLogin(self):
         self.log.debug("test_validLogin scenario executing..")
         self.lp.login("test@email.com", "abcabcxyz")
-        result1 = self.lp.verifyTitle()
-        self.ts.mark(result1, "Title verified ")
-
+        result1 = self.lp.verifyLoginTitle()
+        self.ts.mark(result1, "Title verification ",testName=inspect.stack()[0][3])
         result2 = self.lp.verifyLoginFailed()
-        self.ts.markFinal(result2, "Valid login verified", inspect.stack()[0][3])
+        self.ts.markFinal(result2, "Valid login verification", testName=inspect.stack()[0][3])

@@ -17,7 +17,7 @@ class TestStatus(SeleniumDriver):
         super().__init__(driver)
         self.resultList = []
 
-    def setResult(self, result, resultMessage):
+    def setResult(self, result, resultMessage, testName):
         """
         appending the result status/assert status  to the list
         so it can be verified at the end
@@ -29,31 +29,35 @@ class TestStatus(SeleniumDriver):
 
         try:
             if result is not None:
-                if result:
+                if result:  # we are not writing is True , the result value will be always True or False
                     self.resultList.append("PASS")
                     self.log.info("### VERIFICATION SUCCESSFUL :: {}".format(resultMessage))
                 else:
                     self.resultList.append("FAIL")
                     self.log.error("### VERIFICATION FAILED :: {}".format(resultMessage))
+                    self.saveScreenShot(testName, resultMessage)
 
             else:
                 self.resultList.append("FAIL")
                 self.log.error("### VERIFICATION FAILED :: {}".format(resultMessage))
+                self.saveScreenShot(testName, resultMessage)
 
         except:
             self.resultList.append("FAIL")
             self.log.error("### Exception Occured!!!")
+            self.saveScreenShot(testName, resultMessage)
 
-    def mark(self, result, resultMessage):
+    def mark(self, result, resultMessage, testName):
         """
         Mark the result of the verification point in a test case
+        :param testName:
         :param result:
         :param resultMessage:
         :return:
         """
-        self.setResult(result, resultMessage)
+        self.setResult(result, resultMessage, testName)
 
-    def markFinal(self, result, resultMessage, testName=inspect.stack()[0][3]):
+    def markFinal(self, result, resultMessage, testName):
         """
         Mark the result of the verification point in a test case
         This needs to be called at least once in a test case
@@ -63,7 +67,7 @@ class TestStatus(SeleniumDriver):
         :param resultMessage:
         :return: None
         """
-        self.setResult(result, resultMessage)
+        self.setResult(result, resultMessage, testName)
 
         if "FAIL" in self.resultList:
             self.log.error(testName + "<---### TEST FAILED")
@@ -74,4 +78,3 @@ class TestStatus(SeleniumDriver):
             self.log.error(testName + "<---### TEST PASSED")
             self.resultList.clear()
             assert True == True
-
