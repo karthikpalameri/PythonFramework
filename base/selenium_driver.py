@@ -72,7 +72,7 @@ class SeleniumDriver():
         self.log.info("Elements Found with locator: {} and locatorType: {}".format(locator, locatorType))
         return elements
 
-    def isElementPresent(self, locator, locatorType="id"):
+    def isElementPresent(self, locator="", locatorType="id", element=None):
         """
         will return true if the element is present or else it will return false
         :param locator:
@@ -81,7 +81,8 @@ class SeleniumDriver():
         """
         element = None
         try:
-            element = self.getElement(locator, locatorType)
+            if locator:  # This means the locator is not empty
+                element = self.getElement(locator, locatorType)
             if element is not None:
                 self.log.info("Element Found with locator: {} and locatorType: {}".format(locator, locatorType))
                 return True
@@ -92,7 +93,7 @@ class SeleniumDriver():
             self.log.info("Element Not Found!")
             return False
 
-    def isElementPresenceCheck(self, locator, locatorType):
+    def isElementPresenceCheck(self, locator, locatorType, elements=None):
         """
         will return True or False ,will check if the element is present or not in the page , it does not care for the isDisplayed, if it is present and in the page it will return as true
         :param locator:
@@ -101,8 +102,8 @@ class SeleniumDriver():
         """
         elements = None
         try:
-
-            elements = self.getElements(locator, locatorType)
+            if locator:  # This means the locator is not empty
+                elements = self.getElements(locator, locatorType)
             if len(elements) > 0:
                 self.log.info("Element Found with locator: {} and locatorType: {}".format(locator, locatorType))
                 return True
@@ -151,7 +152,7 @@ class SeleniumDriver():
         except:
             self.log.info(
                 "Waiting Done for locator: {} and locatorType: {}. Element Not Present!!!".format(locator, locatorType))
-            traceback.self.log.info_stack()
+            traceback.print_stack()
 
     def saveScreenShot(self, test_name, result_message):
         try:
@@ -165,21 +166,40 @@ class SeleniumDriver():
             self.log.info("Screenshot taken in-> {}".format(file_path))
         except:
             self.log.info("Something went wrong while taking a Screenshot!!!")
-            traceback.self.log.info_stack()
+            traceback.print_stack()
 
-    def elementClick(self, locator, locatorType="id"):
+    def elementClick(self, locator="", locatorType="id", element=None):
+        """
+        Click on element
+        Either provide element or a combination of both locator and locator type
+        :param locator:
+        :param locatorType:
+        :param element:
+        :return: None
+        """
         try:
-            element = self.getElement(locator, locatorType)
+            if locator:  # This means if the locator is not empty
+                element = self.getElement(locator, locatorType)
             element.click()
             self.log.info("Clicked on element with locator: {} and locatorType: {}".format(locator, locatorType))
         except:
             self.log.info("Click Failed on element with locator: {} and locatorType: {}".format(locator, locatorType))
             self.log.info("self.log.infoing Stack Trace->")
-            traceback.self.log.info_stack()
+            traceback.print_stack()
 
-    def sendKeys(self, locator, dataToEnter, locatorType="id"):
+    def sendKeys(self, dataToEnter, locator="", locatorType="id", element=None):
+        """
+        Send keys to an element
+        Either provide element or a combination of both locator and locator type
+        :param locator:
+        :param dataToEnter:
+        :param locatorType:
+        :param element:
+        :return:
+        """
         try:
-            element = self.getElement(locator, locatorType)
+            if locator:  # This means the locator is not empty
+                element = self.getElement(locator, locatorType)
             element.send_keys(dataToEnter)
             self.log.info(
                 "Entering Data: {} SUCCESSFULL to the locator: {} and locatorType{}".format(dataToEnter, locator,
@@ -188,7 +208,36 @@ class SeleniumDriver():
             self.log.info(
                 "Entering the Data: {} FAILED to the locator: {}  and locatorType: {}".format(dataToEnter, locator,
                                                                                               locatorType))
-            traceback.self.log.info_stack()
+            traceback.print_stack()
 
-    def getTitle(self):
-        return self.driver.title
+    def getText(self, locator="", locatorType="", element=None, info=""):
+        """
+        Get text of an element
+        Either provide element or a combination of both locator and locator type
+        :param locator:
+        :param locatorType:
+        :param element:
+        :return:
+        """
+        try:
+            if locator:
+                self.log.debug("In locator contdition")
+                element = self.getElement(locator, locatorType)
+            self.log.debug("Before finding the text")
+            text = element.text
+            self.log.debug("After finding the text, size is : " + str(len(text)))
+            if len(text) == 0:
+                text = element.get_attribute('innerText')
+            if len(text) != 0:
+                self.log.info("Getting the text of the element :: {}".format(info))
+                self.log.info("The text is :: '{}'".format(text))
+                text = text.strip()
+        except:
+            self.log.error("Failed to get text on element {}".format(info))
+            traceback.print_stack()
+            text = None
+        return text
+
+
+def getTitle(self):
+    return self.driver.title
