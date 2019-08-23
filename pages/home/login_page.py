@@ -1,6 +1,4 @@
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-from base.selenium_driver import SeleniumDriver
+
 import utilities.custom_logger as cl
 import logging
 from base.basepage import Basepage
@@ -10,7 +8,7 @@ class LoginPage(Basepage):
     log = cl.customLogger(logLevel=logging.DEBUG)
 
     def __init__(self, driver):
-        super().__init__(driver)  # calling baseclass constructor with help of self() to initialize driver there first
+        super().__init__(driver)  # calling Basepageclass constructor with help of self() to initialize driver there first
         self.driver = driver
 
     # Locators

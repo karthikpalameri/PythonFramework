@@ -238,6 +238,49 @@ class SeleniumDriver():
             text = None
         return text
 
+    def isElementDisplayed(self, locator="", locatorType="id", element=None):
+
+        try:
+            isDisplayed = False
+            if locator:
+                element = self.getElement(locator, locatorType)
+                isDisplayed = element.is_displayed()
+                self.log.info("Element is displayed with locator: {} , locatorType: {}".format(locator, locatorType))
+            else:
+                self.log.info(
+                    "Element is NOT displayed with locator: {} , locatorType: {}".format(locator, locatorType))
+                return isDisplayed
+        except:
+            self.log.info("!Exception: Element NOT Found")
+            return False
+
+    def webScroll(self, locator="", locatorType="id", direction="up", element=None):
+        """
+        Scrolls the page till the element
+        :param locator:
+        :param locatorType:
+        :param direction:
+        :param element:
+        :return:
+        """
+
+        try:
+            if locator:
+                element = self.getElement(locator, locatorType)
+                self.driver.execute_script("arguments[0].scrollIntoView();", element)
+                self.log.info(
+                    "Scrolling Successful until the Element with locator : {} ,locatorType {} ".format(locator,
+                                                                                                       locatorType))
+                # element.location_once_scrolled_into_view
+            elif direction == "up":
+                self.driver.execute_script("window.scrollBy(0,-1000)")
+                self.log.info("Scrolling page UP by -1000")
+            elif direction == "down":
+                self.driver.execute_script("window.scrollBy(0,1000)")
+                self.log.info("Scrolling page DOWN by 1000")
+        except:
+            self.log.info("!Exception: Failed to Scroll")
+
 
 def getTitle(self):
     return self.driver.title
