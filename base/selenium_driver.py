@@ -4,7 +4,9 @@ from time import strftime, localtime
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.remote import webelement
 import utilities.custom_logger as cl
 import logging
 
@@ -46,7 +48,7 @@ class SeleniumDriver():
             self.log.info("Locator Type:{} not correct/supported".format(locatorType))
         return False
 
-    def getElement(self, locator, locatorType="id"):
+    def getElement(self, locator, locatorType="id") -> webelement:
         """
         Returns a single element if present
         :param locator:
@@ -90,7 +92,7 @@ class SeleniumDriver():
                 self.log.info("Element NOT Found with locator: {} and locatorType: {}".format(locator, locatorType))
                 return False
         except:
-            self.log.info("Element Not Found!")
+            self.log.error("Element Not Found!")
             return False
 
     def isElementPresenceCheck(self, locator, locatorType, elements=None):
@@ -111,7 +113,7 @@ class SeleniumDriver():
                 self.log.info("Element NOT Found with locator: {} and locatorType: {}".format(locator, locatorType))
                 return False
         except:
-            self.log.info("Element NOT Found with locator: {} and locatorType: {}".format(locator, locatorType))
+            self.log.error("Element NOT Found with locator: {} and locatorType: {}".format(locator, locatorType))
             return False
 
     def waitForElement(self, locator, locatorType, timeout=10, poll_frequency=0.5, waitType="visible"):
@@ -150,7 +152,7 @@ class SeleniumDriver():
                         locator, locatorType))
             return element
         except:
-            self.log.info(
+            self.log.error(
                 "Waiting Done for locator: {} and locatorType: {}. Element Not Present!!!".format(locator, locatorType))
             traceback.print_stack()
 
@@ -165,7 +167,7 @@ class SeleniumDriver():
             self.driver.save_screenshot(file_path)
             self.log.info("Screenshot taken in-> {}".format(file_path))
         except:
-            self.log.info("Something went wrong while taking a Screenshot!!!")
+            self.log.error("Something went wrong while taking a Screenshot!!!")
             traceback.print_stack()
 
     def elementClick(self, locator="", locatorType="id", element=None):
@@ -183,8 +185,8 @@ class SeleniumDriver():
             element.click()
             self.log.info("Clicked on element with locator: {} and locatorType: {}".format(locator, locatorType))
         except:
-            self.log.info("Click Failed on element with locator: {} and locatorType: {}".format(locator, locatorType))
-            self.log.info("self.log.infoing Stack Trace->")
+            self.log.error("Click FAILED on element with locator: {} and locatorType: {}".format(locator, locatorType))
+            self.log.error("self.log.infoing Stack Trace->")
             traceback.print_stack()
 
     def sendKeys(self, dataToEnter, locator="", locatorType="id", element=None):
@@ -205,7 +207,7 @@ class SeleniumDriver():
                 "Entering Data: {} SUCCESSFULL to the locator: {} and locatorType{}".format(dataToEnter, locator,
                                                                                             locatorType))
         except:
-            self.log.info(
+            self.log.error(
                 "Entering the Data: {} FAILED to the locator: {}  and locatorType: {}".format(dataToEnter, locator,
                                                                                               locatorType))
             traceback.print_stack()
@@ -217,7 +219,7 @@ class SeleniumDriver():
         :param locator:
         :param locatorType:
         :param element:
-        :return:
+        :return: str
         """
         try:
             if locator:
@@ -233,7 +235,7 @@ class SeleniumDriver():
                 self.log.info("The text is :: '{}'".format(text))
                 text = text.strip()
         except:
-            self.log.error("Failed to get text on element {}".format(info))
+            self.log.error("FAILED to get text on element {}".format(info))
             traceback.print_stack()
             text = None
         return text
@@ -251,10 +253,10 @@ class SeleniumDriver():
                     "Element is NOT displayed with locator: {} , locatorType: {}".format(locator, locatorType))
                 return isDisplayed
         except:
-            self.log.info("!Exception: Element NOT Found")
+            self.log.error("!Exception: Element NOT Found")
             return False
 
-    def webScroll(self, locator="", locatorType="id", direction="up", element=None):
+    def webScroll(self, locator="", locatorType="id", direction="up"):
         """
         Scrolls the page till the element
         :param locator:
@@ -279,7 +281,49 @@ class SeleniumDriver():
                 self.driver.execute_script("window.scrollBy(0,1000)")
                 self.log.info("Scrolling page DOWN by 1000")
         except:
-            self.log.info("!Exception: Failed to Scroll")
+            self.log.error("!Exception: FAILED to Scroll")
+
+    def select(self, locator="", locatorType="id", element=None, toSelect=""):
+        """
+        Selcts option from the select box
+        :param locator:
+        :param locatorType:
+        :param element:
+        :param toSelect: visibleText to be selected
+        :return: None
+        """
+        try:
+            if locator:
+                element = self.getElement(locator, locatorType)
+            select = Select(element)
+            select.select_by_visible_text(toSelect)
+            self.log.info("Selecting option ->{} from Select box locator:{}, locatorType:{}".format(toSelect, locator,
+                                                                                                    locatorType))
+        except:
+            self.log.error(
+                "Exception!:Selecting Option ->{} FAILED from Select box locator:{}, locatorType:{}".format(toSelect,
+                                                                                                            locator,
+                                                                                                            locatorType))
+
+    def checkSelected(self, locator="", locatorType="id", element=None) -> bool:
+        """
+        Checks if the  element is selected or not
+        :param locator:
+        :param locatorType:
+        :param element:
+        :return: boolean
+        """
+        try:
+            if locator:
+                element = self.getElement(locator, locatorType)
+            state = element.is_selected
+            if state:
+                self.log.info("Element with locator:{}, locatorType:{} is Enabled")
+            else:
+                self.log.info("Element with locator:{}, locatorType:{} is Disabled")
+            return state
+        except:
+            self.log.error("Exception!:Failed to check if the element is selected or not")
 
 
 def getTitle(self):

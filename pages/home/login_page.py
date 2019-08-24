@@ -21,10 +21,10 @@ class LoginPage(Basepage):
         self.elementClick(self._login_link, "linktext")
 
     def enterEmail(self, username):
-        self.sendKeys(self._email_field, username)
+        self.sendKeys(locator=self._email_field, dataToEnter=username)
 
     def enterPassword(self, password):
-        self.sendKeys(self._password_field, password)
+        self.sendKeys(locator=self._password_field, dataToEnter=password)
 
     def clickLoginButton(self):
         self.elementClick(self._login_button_xpath, "xpath")
