@@ -16,12 +16,14 @@ class TestRegisterCoursesTest():
         self.lp=LoginPage(self.driver)
         self.ts = TestStatus(self.driver)
 
-    @pytest.mark.popopo
+
     @pytest.mark.run(order=1)
     def test_invalidEnrollment(self):
         self.driver.get(self.baseUrl)
         self.lp.login("test@email.com", "abcabc")
-        result = self.lp.verifyLoginSuccessful()
-        self.ts.mark(result, "Invalid login verification", testName=inspect.stack()[0][3])
+        result1 = self.lp.verifyLoginSuccessful()
+        self.ts.mark(result1, " login verification", testName=inspect.stack()[0][3])
 
         self.rc.enrollCourse("Selenium WebDriver With Java", "6" * 16, "2345", "12345", "United States", "12345")
+        result2=self.rc.verifyEnrollFailed("The card was declined.")
+        self.ts.markFinal(result2, " Enrollment verification", testName=inspect.stack()[0][3])

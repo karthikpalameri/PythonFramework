@@ -2,6 +2,7 @@ import os
 import traceback
 from time import strftime, localtime
 
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.select import Select
@@ -26,27 +27,31 @@ class SeleniumDriver():
         :param locatorType: linktext,partiallinktext,tagname,name,classname,cssselector,xpath,id
         :return:
         """
-        locatorType = locatorType.lower()
-        if locatorType == "id":
-            return By.ID
-        elif locatorType == "xpath":
-            return By.XPATH
-        elif locatorType == "cssselector":
-            return By.CSS_SELECTOR
-        elif locatorType == "name":
-            return By.NAME
-        elif locatorType == "classname":
-            return By.CLASS_NAME
-        elif locatorType == "linktext":
-            return By.LINK_TEXT
-        elif locatorType == "partiallinktext":
-            return By.PARTIAL_LINK_TEXT
-        elif locatorType == "tagname":
-            return By.TAG_NAME
+        try:
+            locatorType = locatorType.lower()
+            if locatorType == "id":
+                return By.ID
+            elif locatorType == "xpath":
+                return By.XPATH
+            elif locatorType == "cssselector":
+                return By.CSS_SELECTOR
+            elif locatorType == "name":
+                return By.NAME
+            elif locatorType == "classname":
+                return By.CLASS_NAME
+            elif locatorType == "linktext":
+                return By.LINK_TEXT
+            elif locatorType == "partiallinktext":
+                return By.PARTIAL_LINK_TEXT
+            elif locatorType == "tagname":
+                return By.TAG_NAME
 
-        else:
-            self.log.info("Locator Type:{} not correct/supported".format(locatorType))
-        return False
+            else:
+                self.log.info("Locator Type:{} not correct/supported".format(locatorType))
+            return False
+        except:
+            self.log.debug("Exception! in getByType-> Locator Type:{} NOT CORRECT/NOT SUPPORTED".format(locatorType))
+            traceback.print_stack()
 
     def getElement(self, locator, locatorType="id") -> webelement:
         """
@@ -55,11 +60,17 @@ class SeleniumDriver():
         :param locatorType:linktext,partiallinktext,tagname,name,classname,cssselector,xpath,id
         :return:
         """
-        element = None
-        byType = self.getByType(locatorType)
-        element = self.driver.find_element(byType, locator)
-        self.log.info("Element Found with locator: {} and locatorType: {}".format(locator, locatorType))
-        return element
+        try:
+            element = None
+            byType = self.getByType(locatorType)
+            element = self.driver.find_element(byType, locator)
+            self.log.info("Element Found with locator: {} and locatorType: {}".format(locator, locatorType))
+            return element
+        except:
+            self.log.error(
+                "Exception! in getElement. Element NOT Found with locator: {} and locatorType: {}".format(locator,
+                                                                                                          locatorType))
+            traceback.print_stack()
 
     def getElements(self, locator, locatorType="id"):
         """
@@ -68,11 +79,17 @@ class SeleniumDriver():
         :param locatorType:
         :return:
         """
-        elements = None
-        byType = self.getByType(locatorType)
-        elements = self.driver.find_elements(byType, locator)
-        self.log.info("Elements Found with locator: {} and locatorType: {}".format(locator, locatorType))
-        return elements
+        try:
+            elements = None
+            byType = self.getByType(locatorType)
+            elements = self.driver.find_elements(byType, locator)
+            self.log.info("Elements Found with locator: {} and locatorType: {}".format(locator, locatorType))
+            return elements
+        except:
+            self.log.error(
+                "Exception! in getElements Elements NOT Found with locator: {} and locatorType: {}".format(locator,
+                                                                                                           locatorType))
+            traceback.print_stack()
 
     def isElementPresent(self, locator="", locatorType="id", element=None):
         """
@@ -206,10 +223,11 @@ class SeleniumDriver():
             self.log.info(
                 "Entering Data: {} SUCCESSFULL to the locator: {} and locatorType{}".format(dataToEnter, locator,
                                                                                             locatorType))
-        except:
+        except Exception as e:
             self.log.error(
-                "Entering the Data: {} FAILED to the locator: {}  and locatorType: {}".format(dataToEnter, locator,
-                                                                                              locatorType))
+                "Entering the Data: {} FAILED to the locator: {}  and locatorType: {} ".format(dataToEnter, locator,
+                                                                                               locatorType))
+            self.log.error("Exception Message->{}".format(e))
             traceback.print_stack()
 
     def getText(self, locator="", locatorType="", element=None, info=""):
@@ -234,11 +252,11 @@ class SeleniumDriver():
                 self.log.info("Getting the text of the element :: {}".format(info))
                 self.log.info("The text is :: '{}'".format(text))
                 text = text.strip()
+                return text
         except:
             self.log.error("FAILED to get text on element {}".format(info))
             traceback.print_stack()
             text = None
-        return text
 
     def isElementDisplayed(self, locator="", locatorType="id", element=None):
 
@@ -256,7 +274,7 @@ class SeleniumDriver():
             self.log.error("!Exception: Element NOT Found")
             return False
 
-    def webScroll(self, locator="", locatorType="id", direction="up"):
+    def webScroll(self, locator="", locatorType="id", direction="up", element=None):
         """
         Scrolls the page till the element
         :param locator:
@@ -325,6 +343,22 @@ class SeleniumDriver():
         except:
             self.log.error("Exception!:Failed to check if the element is selected or not")
 
+    def moveMouseTo(self, locator="", locatorType="id", element=None):
+        """
+        Moves the cursor to the locatoror element
+        :param locator:
+        :param locatorType:
+        :param element:
+        :return:
+        """
+        try:
+            if locator:
+                element = self.getElement(locator, locatorType)
+            ActionChains(self.driver).move_to_element(element).perform()
+            self.log.info("Moving Mouse to Element with locator: {} ,locatorType:{}".format(locator, locatorType))
+        except:
+            self.log.error(
+                "Moving Mouse FAILED to Element with locator: {} ,locatorType:{}".format(locator, locatorType))
 
-def getTitle(self):
-    return self.driver.title
+    def getTitle(self):
+        return self.driver.title
