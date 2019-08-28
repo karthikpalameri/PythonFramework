@@ -1,15 +1,20 @@
+from selenium.webdriver import ActionChains
 
 import utilities.custom_logger as cl
 import logging
 from base.basepage import Basepage
+from utilities.prototype import Prototype as pt
 
 
 class LoginPage(Basepage):
     log = cl.customLogger(logLevel=logging.DEBUG)
 
     def __init__(self, driver):
-        super().__init__(driver)  # calling Basepageclass constructor with help of self() to initialize driver there first
+        super().__init__(
+            driver)  # calling Basepageclass constructor with help of self() to initialize driver there first
         self.driver = driver
+        self.ptobject = pt(driver)
+
 
     # Locators
     _login_link = "Login"
@@ -30,6 +35,9 @@ class LoginPage(Basepage):
         self.elementClick(self._login_button_xpath, "xpath")
 
     def login(self, username="", password=""):
+        print()
+        ele = self.ptobject.getElementFromProtoType(page_name="practice", image_name="hide.png")
+        self.elementClick(element=ele)
         self.clickLoginLink()
         self.enterEmail(username)
         self.enterPassword(password)

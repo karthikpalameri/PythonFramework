@@ -43,7 +43,9 @@ class WebDriverFactory():
             driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
             print("%" * 60)
 
-        driver.maximize_window()
+        # driver.maximize_window()
+        driver.set_window_size(1366,768)
+
         driver.get(self.base_url)
         driver.implicitly_wait(10)
         return driver

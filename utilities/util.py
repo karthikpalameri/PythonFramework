@@ -1,13 +1,17 @@
+import logging
 import time
 import traceback
+from pathlib import Path
 
-from base.selenium_driver import SeleniumDriver
-import logging
 from utilities import custom_logger as cl
 
 
-class Util(object):
+class Util():
     log = cl.customLogger(logLevel=logging.DEBUG)
+
+    def get_project_root(self):
+        """Returns Project root folder"""
+        return Path(__file__).parent.parent
 
     def sleep(self, sec, info=""):
         if info is not None:
@@ -34,8 +38,6 @@ class Util(object):
         else:
             self.log.info("### VERIFICATION DOES NOT CONTAINS!!!")
             return False
-
-
 
 # """
 # odd numbers even number print

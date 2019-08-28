@@ -5,7 +5,7 @@ import pytest
 
 from pages.home.login_page import LoginPage
 from utilities import custom_logger as cl
-from utilities.teststatus import TestStatus
+from utilities.resultstatustracker import ResultStatusTracker
 
 
 @pytest.mark.usefixtures("oneTimeSetup", "setUp")
@@ -22,7 +22,7 @@ class TestLoginTests():
         """
         print("inside classsetuppp")
         self.lp = LoginPage(self.driver)
-        self.ts = TestStatus(self.driver)
+        self.ts = ResultStatusTracker(self.driver)
 
     @pytest.mark.run(order=1)
     def test_validLogin(self):

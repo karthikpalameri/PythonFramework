@@ -10,7 +10,7 @@ import logging
 from utilities.custom_logger import customLogger as cl
 
 
-class TestStatus(SeleniumDriver):
+class ResultStatusTracker(SeleniumDriver):
     log = cl(logging.DEBUG)
 
     def __init__(self, driver):

@@ -1,5 +1,6 @@
 import inspect
 import logging
+from pathlib import Path
 
 
 def customLogger(logLevel=logging.DEBUG):
@@ -9,7 +10,11 @@ def customLogger(logLevel=logging.DEBUG):
 
     # Create handlers
     c_handler = logging.StreamHandler()
-    f_handler = logging.FileHandler("automation.log", mode='w')
+    file_location = Path.cwd().parent.parent
+    file_location = file_location / 'AutomationLogs'
+
+    Path(file_location).mkdir(parents=True, exist_ok=True)
+    f_handler = logging.FileHandler(file_location / "AutomationLog.log", mode='w')
 
     logger.setLevel(logLevel)
 

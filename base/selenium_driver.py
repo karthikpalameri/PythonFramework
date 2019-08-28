@@ -1,5 +1,6 @@
 import os
 import traceback
+from pathlib import Path
 from time import strftime, localtime
 
 from selenium.webdriver import ActionChains
@@ -175,17 +176,22 @@ class SeleniumDriver():
 
     def saveScreenShot(self, test_name, result_message):
         try:
-            dir_location = os.getcwd() + "/Screenshots/" + test_name + "/"
+            # dir_location = os.getcwd() + "/Screenshots/" + test_name + "/"
+            dir_location = Path(__file__).parent.parent / 'Screenshots' / test_name
+            # Path.mkdir(dir_location, exist_ok=True)
             os.makedirs(dir_location, exist_ok=True)
-            file_name = result_message + strftime("%d-%m-%y_%H:%M:%S", localtime()) + ".png"
+            file_name = result_message.strip() + strftime("%d-%m-%y_%H:%M:%S", localtime()) + ".png"
 
-            file_path = os.path.join(dir_location, file_name)
+            # file_path = os.path.join(dir_location, file_name)
+            file_path = dir_location / file_name
             self.log.info("Taking Screenshot to-> {}".format(file_path))
-            self.driver.save_screenshot(file_path)
+            self.driver.save_screenshot(str(file_path))
             self.log.info("Screenshot taken in-> {}".format(file_path))
         except:
             self.log.error("Something went wrong while taking a Screenshot!!!")
             traceback.print_stack()
+
+
 
     def elementClick(self, locator="", locatorType="id", element=None):
         """
