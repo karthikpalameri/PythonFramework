@@ -60,8 +60,8 @@ class Prototype(SeleniumDriver):
 
             log.warning("Got the coordinated in the Screenshot as X:%s,Y:%s" % (top_left[0], top_left[1]))
 
-            percentageX = top_left[0] / fullimage.shape[1]
-            perentageY = top_left[1] / fullimage.shape[0]
+            percentageX = ((top_left[0] + bottom_right[0]) / 2) / fullimage.shape[1]
+            perentageY = ((top_left[1] + bottom_right[1]) / 2) / fullimage.shape[0]
 
             log.warning(
                 "Calculated Percentage from the original Screenshot , X:{}%  , Y:{}%".format(percentageX, perentageY))
@@ -69,18 +69,18 @@ class Prototype(SeleniumDriver):
             vpw, vph = self.getViewPortWidtHeight()
 
             log.warning(
-                "Got the ViewPort Size as  , X:{}%  , Y:{}%".format(vpw, vph))
+                "Got the ViewPort Size as  , X:{}  , Y:{}".format(vpw, vph))
 
             actx = vpw * percentageX
-            acty = vpw * perentageY
+            acty = vph * perentageY
 
             log.warning(
-                "Calculated Percentage from the ViewPort Screenshot , X:{}%  , Y:{}%".format(actx, acty))
+                "Calculated Percentage from the ViewPort Screenshot and got  , X:{}  , Y:{}".format(actx, acty))
 
             # return (top_left[0], top_left[1])
 
             log.warning(
-                "Returning Actual Cordinated from the ViewPort Screenshot->> X:{}%  , Y:{}%".format(actx, acty))
+                "Returning Actual Co-ordinate from the ViewPort Screenshot->> X:{}  , Y:{}".format(actx, acty))
 
             return (actx, acty)
 
@@ -95,7 +95,7 @@ class Prototype(SeleniumDriver):
                                                         x, y)
         return calculated_element
 
-    def getScreenShotPath(self,tempfilename="temp.png"):
+    def getScreenShotPath(self, tempfilename="temp.png"):
         try:
             # dir_location = os.getcwd() + "/Screenshots/" + test_name + "/"
             dir_location = Path(__file__).parent.parent / 'ScreenshotsPrototypeTemp'

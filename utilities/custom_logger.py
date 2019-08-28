@@ -14,7 +14,7 @@ def customLogger(logLevel=logging.DEBUG):
     file_location = file_location / 'AutomationLogs'
 
     Path(file_location).mkdir(parents=True, exist_ok=True)
-    f_handler = logging.FileHandler(file_location / "AutomationLog.log", mode='w')
+    f_handler = logging.FileHandler(file_location / "AutomationLog.log", mode='a')
 
     logger.setLevel(logLevel)
 
