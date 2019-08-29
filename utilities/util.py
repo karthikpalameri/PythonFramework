@@ -20,7 +20,7 @@ class Util():
         try:
             time.sleep(sec)
         except:
-            traceback.print_stack()
+            traceback.print_exc()
 
     def verifyTextContains(self, actualText, expectedText):
         """

@@ -1,3 +1,5 @@
+import inspect
+
 from selenium.webdriver import ActionChains
 
 import utilities.custom_logger as cl
@@ -15,7 +17,6 @@ class LoginPage(Basepage):
         self.driver = driver
         self.ptobject = pt(driver)
 
-
     # Locators
     _login_link = "Login"
     _email_field = "user_email"
@@ -23,6 +24,8 @@ class LoginPage(Basepage):
     _login_button_xpath = "//input[@name='commit']"
 
     def clickLoginLink(self):
+        print()
+        self.ptobject.cropElement(self.__class__.__name__, "_login_link", self._login_link, "linktext")
         self.elementClick(self._login_link, "linktext")
 
     def enterEmail(self, username):
@@ -36,7 +39,7 @@ class LoginPage(Basepage):
 
     def login(self, username="", password=""):
         print()
-        ele = self.ptobject.getElementFromProtoType(page_name="practice", image_name="hide.png")
+        ele = self.ptobject.getElementFromProtoType(page_name="practice", image_name="_login_link.png")
         self.elementClick(element=ele)
         self.clickLoginLink()
         self.enterEmail(username)

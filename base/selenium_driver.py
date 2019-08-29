@@ -52,7 +52,7 @@ class SeleniumDriver():
             return False
         except:
             self.log.debug("Exception! in getByType-> Locator Type:{} NOT CORRECT/NOT SUPPORTED".format(locatorType))
-            traceback.print_stack()
+            traceback.print_exc()
 
     def getElement(self, locator, locatorType="id") -> webelement:
         """
@@ -71,7 +71,7 @@ class SeleniumDriver():
             self.log.error(
                 "Exception! in getElement. Element NOT Found with locator: {} and locatorType: {}".format(locator,
                                                                                                           locatorType))
-            traceback.print_stack()
+            traceback.print_exc()
 
     def getElements(self, locator, locatorType="id"):
         """
@@ -90,7 +90,7 @@ class SeleniumDriver():
             self.log.error(
                 "Exception! in getElements Elements NOT Found with locator: {} and locatorType: {}".format(locator,
                                                                                                            locatorType))
-            traceback.print_stack()
+            traceback.print_exc()
 
     def isElementPresent(self, locator="", locatorType="id", element=None):
         """
@@ -172,7 +172,7 @@ class SeleniumDriver():
         except:
             self.log.error(
                 "Waiting Done for locator: {} and locatorType: {}. Element Not Present!!!".format(locator, locatorType))
-            traceback.print_stack()
+            traceback.print_exc()
 
     def saveScreenShot(self, test_name, result_message):
         try:
@@ -189,9 +189,7 @@ class SeleniumDriver():
             self.log.info("Screenshot taken in-> {}".format(file_path))
         except:
             self.log.error("Something went wrong while taking a Screenshot!!!")
-            traceback.print_stack()
-
-
+            traceback.print_exc()
 
     def elementClick(self, locator="", locatorType="id", element=None):
         """
@@ -210,7 +208,7 @@ class SeleniumDriver():
         except:
             self.log.error("Click FAILED on element with locator: {} and locatorType: {}".format(locator, locatorType))
             self.log.error("self.log.infoing Stack Trace->")
-            traceback.print_stack()
+            traceback.print_exc()
 
     def sendKeys(self, dataToEnter, locator="", locatorType="id", element=None):
         """
@@ -234,7 +232,7 @@ class SeleniumDriver():
                 "Entering the Data: {} FAILED to the locator: {}  and locatorType: {} ".format(dataToEnter, locator,
                                                                                                locatorType))
             self.log.error("Exception Message->{}".format(e))
-            traceback.print_stack()
+            traceback.print_exc()
 
     def getText(self, locator="", locatorType="", element=None, info=""):
         """
@@ -261,7 +259,7 @@ class SeleniumDriver():
                 return text
         except:
             self.log.error("FAILED to get text on element {}".format(info))
-            traceback.print_stack()
+            traceback.print_exc()
             text = None
 
     def isElementDisplayed(self, locator="", locatorType="id", element=None):
@@ -279,6 +277,7 @@ class SeleniumDriver():
         except:
             self.log.error("!Exception: Element NOT Found")
             return False
+
 
     def webScroll(self, locator="", locatorType="id", direction="up", element=None):
         """
@@ -306,6 +305,7 @@ class SeleniumDriver():
                 self.log.info("Scrolling page DOWN by 1000")
         except:
             self.log.error("!Exception: FAILED to Scroll")
+            traceback.print_exc()
 
     def select(self, locator="", locatorType="id", element=None, toSelect=""):
         """
@@ -327,7 +327,8 @@ class SeleniumDriver():
             self.log.error(
                 "Exception!:Selecting Option ->{} FAILED from Select box locator:{}, locatorType:{}".format(toSelect,
                                                                                                             locator,
-                                                                                                            locatorType))
+                                                                                                         locatorType))
+            traceback.print_exc()
 
     def checkSelected(self, locator="", locatorType="id", element=None) -> bool:
         """
@@ -348,6 +349,7 @@ class SeleniumDriver():
             return state
         except:
             self.log.error("Exception!:Failed to check if the element is selected or not")
+            traceback.print_exc()
 
     def moveMouseTo(self, locator="", locatorType="id", element=None):
         """
@@ -365,6 +367,46 @@ class SeleniumDriver():
         except:
             self.log.error(
                 "Moving Mouse FAILED to Element with locator: {} ,locatorType:{}".format(locator, locatorType))
+            traceback.print_exc()
 
     def getTitle(self):
         return self.driver.title
+
+    def getElementCoOrdinate(self, locator="", locatorType="id", element=None):
+        """Gets the X and Y locaiton of the element"""
+
+        try:
+            if locator:
+                element = self.getElement(locator, locatorType)
+            left = element.location['x']
+            top = element.location['y']
+            self.log.info(
+                "Got the location as x:{},y:{} ,for the element with locator:{}, locatorType:{}".format(left, top,
+                                                                                                      locator,
+                                                                                                      locatorType))
+            return (left, top)
+        except Exception as e:
+            self.log.error("Exception! in getElementCoOrdinate method Failed to get the Coordinate,  Exception message->{}".format(e))
+            print("Exception message->{}".format(e))
+            traceback.print_exc()
+
+    def getElementWidthAndHeight(self, locator="", locatorType="id", element=None):
+        """Gets the X and Y locaiton of the element"""
+
+        try:
+            if locator:
+                element = self.getElement(locator, locatorType)
+            width = element.size['width']
+            height = element.size['height']
+            self.log.info(
+                "Got the width and height as width:{},height:{} ,for the element with locator:{}, locatorType:{}".format(left, top,
+                                                                                                      locator,
+                                                                                                      locatorType))
+            return (width, height)
+        except Exception as e:
+            self.log.error("Exception! in getElementWidthAndHeight method.Failed to get the wifth and height Exception message->{}".format(e))
+            print("Exception message->{}".format(e))
+            traceback.print_exc()
+
+
+
