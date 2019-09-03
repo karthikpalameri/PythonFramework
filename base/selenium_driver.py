@@ -175,6 +175,12 @@ class SeleniumDriver():
             traceback.print_exc()
 
     def saveScreenShot(self, test_name, result_message):
+        """
+        Take a screen shot and save it in project level directory with date and time
+        :param test_name: creates a Dir with the test name
+        :param result_message: file name to save for screenshot in the test_name dir
+        :return: none
+        """
         try:
             # dir_location = os.getcwd() + "/Screenshots/" + test_name + "/"
             dir_location = Path(__file__).parent.parent / 'Screenshots' / test_name
@@ -212,7 +218,7 @@ class SeleniumDriver():
 
     def sendKeys(self, dataToEnter, locator="", locatorType="id", element=None):
         """
-        Send keys to an element
+        Send keys to an element but berfore that clears the text box content twice
         Either provide element or a combination of both locator and locator type
         :param locator:
         :param dataToEnter:
@@ -222,7 +228,18 @@ class SeleniumDriver():
         """
         try:
             if locator:  # This means the locator is not empty
-                element = self.getElement(locator, locatorType)
+                element: webelement = self.getElement(locator, locatorType)
+            self.log.info(
+                "Clearing the Text->\"{}\" present in the textbox with locator:{} locatorType:{}".format(element.text,
+                                                                                                         locator,
+                                                                                                         locatorType))
+            element.clear()
+            element.clear()
+            self.log.info(
+                "After Clearing the Text is ->\"{}\" which is present in the textbox with locator:{} locatorType:{}".format(
+                    element.text,
+                    locator,
+                    locatorType))
             element.send_keys(dataToEnter)
             self.log.info(
                 "Entering Data: {} SUCCESSFULL to the locator: {} and locatorType{}".format(dataToEnter, locator,
@@ -278,7 +295,6 @@ class SeleniumDriver():
             self.log.error("!Exception: Element NOT Found")
             return False
 
-
     def webScroll(self, locator="", locatorType="id", direction="up", element=None):
         """
         Scrolls the page till the element
@@ -327,7 +343,7 @@ class SeleniumDriver():
             self.log.error(
                 "Exception!:Selecting Option ->{} FAILED from Select box locator:{}, locatorType:{}".format(toSelect,
                                                                                                             locator,
-                                                                                                         locatorType))
+                                                                                                            locatorType))
             traceback.print_exc()
 
     def checkSelected(self, locator="", locatorType="id", element=None) -> bool:
@@ -341,8 +357,8 @@ class SeleniumDriver():
         try:
             if locator:
                 element = self.getElement(locator, locatorType)
-            state = element.is_selected
-            if state:
+            state = element.is_selected()
+            if state is True:
                 self.log.info("Element with locator:{}, locatorType:{} is Enabled")
             else:
                 self.log.info("Element with locator:{}, locatorType:{} is Disabled")
@@ -382,11 +398,13 @@ class SeleniumDriver():
             top = element.location['y']
             self.log.info(
                 "Got the location as x:{},y:{} ,for the element with locator:{}, locatorType:{}".format(left, top,
-                                                                                                      locator,
-                                                                                                      locatorType))
+                                                                                                        locator,
+                                                                                                        locatorType))
             return (left, top)
         except Exception as e:
-            self.log.error("Exception! in getElementCoOrdinate method Failed to get the Coordinate,  Exception message->{}".format(e))
+            self.log.error(
+                "Exception! in getElementCoOrdinate method Failed to get the Coordinate,  Exception message->{}".format(
+                    e))
             print("Exception message->{}".format(e))
             traceback.print_exc()
 
@@ -399,14 +417,47 @@ class SeleniumDriver():
             width = element.size['width']
             height = element.size['height']
             self.log.info(
-                "Got the width and height as width:{},height:{} ,for the element with locator:{}, locatorType:{}".format(left, top,
-                                                                                                      locator,
-                                                                                                      locatorType))
+                "Got the width and height as width:{},height:{} ,for the element with locator:{}, locatorType:{}".format(
+                    width, height))
             return (width, height)
         except Exception as e:
-            self.log.error("Exception! in getElementWidthAndHeight method.Failed to get the wifth and height Exception message->{}".format(e))
+            self.log.error(
+                "Exception! in getElementWidthAndHeight method.Failed to get the wifth and height Exception message->{}".format(
+                    e))
             print("Exception message->{}".format(e))
             traceback.print_exc()
 
+    def switchToFrame(self, locator="", locatorType="id", element=None, info=""):
+        """
+        Switch to a frame by locator or element as parameter
+        :param locator:
+        :param locatorType:
+        :param element:
+        :return:
+        """
+        try:
+            if locator:
+                element = self.getElement(locator, locatorType)
 
+            self.driver.switch_to.frame(element)
+            self.log.info("Switched to {} frame ".format(info))
+        except Exception as e:
+            self.log.error(
+                "Exception! in switchToFrame method.Failed to switch frame to {} \n Exception message->{}".format(info,
+                                                                                                                  e))
+            traceback.print_exc()
 
+    def switchBackToParentFrame(self, info="Switch to parent frame"):
+        """
+        Switch to parent frame
+        :return:
+        """
+        try:
+            self.driver.switch_to.default_content()
+            self.log.info("Switched to parent frame ->{}".format(info))
+        except Exception as e:
+            self.log.error(
+                "Exception! in switchBackToParentFrame method.Failed to switch frame to {} \n Exception message->{}".format(
+                    info,
+                    e))
+            traceback.print_exc()

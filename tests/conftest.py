@@ -10,7 +10,17 @@ you can specifiy scope like package module fuction class
 """
 
 
+# def star(fun):
+#     def inner(*args, **kwargs):
+#         print("*" * 90)
+#         fun(*args, **kwargs)
+#         print("*" * 90)
+#     return inner
+
+
+
 @pytest.yield_fixture()
+# @star
 def setUp():
     print()
     print("-" * 60)
@@ -26,7 +36,7 @@ def setUp():
 
 # scope can be function , module , package , session
 @pytest.yield_fixture(scope="class")
-def oneTimeSetup(request, command_line_browser, base_url):
+def oneTimeSetup(request, command_line_browser, base_url) -> webdriver:
     """
     passing fixture name inside another fixture is possible, so that they get executed first
     we are calling another fixture 'command_line_browser' before executing oneTimeSetup to get the browsertype
@@ -43,6 +53,7 @@ def oneTimeSetup(request, command_line_browser, base_url):
     print("*" * 60)
 
     yield driver
+
     print("*" * 60)
     print("Running conftest oneTimeTearDown before every CLASS as specified")
     driver.quit()

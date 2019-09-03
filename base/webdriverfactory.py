@@ -26,7 +26,7 @@ class WebDriverFactory():
         self.browser = command_line_browser
         self.base_url = base_url
 
-    def getWebDriverFactoryInstance(self):
+    def getWebDriverFactoryInstance(self)->webdriver:
         if self.browser == 'firefox':
             print("%" * 60)
             print("Running tests in Firefox as it is passed as command line argument..")

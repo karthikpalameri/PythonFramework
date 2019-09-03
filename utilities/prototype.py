@@ -12,13 +12,13 @@ from PIL import Image
 
 
 class Prototype(SeleniumDriver):
-
+    log = cl.customLogger(logLevel=logging.DEBUG)
     def __init__(self, driver):
         super().__init__(driver)
         self.driver = driver
 
     def getLocationCordinates(self, fullimage_location, templateimage_location):
-        log = cl.customLogger(logLevel=logging.DEBUG)
+
         fullimage_location = str(fullimage_location)
         templateimage_loaction = str(templateimage_location)
 
@@ -96,7 +96,7 @@ class Prototype(SeleniumDriver):
         return calculated_element
 
     def getScreenShotAndItsPath(self, tempfilename="temp1.png"):
-        """Takes screenshot and returns the path of the ss"""
+        """Takes screenshot and returns the path of the ssTrain"""
         try:
             # dir_location = os.getcwd() + "/Screenshots/" + test_name + "/"
             dir_location = Path(__file__).parent.parent / 'ScreenshotsPrototypeTemp'

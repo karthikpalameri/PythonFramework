@@ -1,7 +1,6 @@
-import inspect
+import logging
 
 import utilities.custom_logger as cl
-import logging
 from base.basepage import Basepage
 from utilities.resultstatustracker import ResultStatusTracker
 
@@ -20,12 +19,15 @@ class RegisterCoursesPages(Basepage):
     _search_button_xpath = "// *[ @ id = 'search-course-button']"
     _selenium_webdriver_with_java_course_xpath = "//div[contains(text(),'Selenium WebDriver With Java')]"
     _enroll_in_course_button_top_css = "[id='enroll-button-top']"
-    _card_number_text_field_xpath = "//div[@id='credit_card_number']"
-    _card_expiration_date_text_field_css = "[name='exp-date']"
-    _card_cvv_text_field_css = "[name='cvc']"
+    _card_number_text_xpath = "//*[text()='Card Number']"
+    _card_number_text_field_iframe_xpath = "//*[@aria-label='Credit or debit card number']"
+    _common_frame_for_payment_input_fields_xpath = "//iframe[@name='{}']"
+    _payment_info_frame = "//*[text()='Payment Information']"
+    _card_expiration_date_text_field_xpath = "//*[@placeholder='MM / YY']"
+    _card_cvv_text_field_xpath = "//*[@aria-label='Credit or debit card CVC/CVV']"
     _card_country_select_box_id = "country_code_credit_card-cc"
-    _card_postal_code_text_field_css = "[name='postal']"
-    _card_i_agree_radio_button_id = "agreed_to_terms_checkbox"
+    _card_postal_code_text_field_xpath = "//*[@id='root']/form/span[2]/span/input[@name='postal']"
+    _card_i_agree_radio_button_xpath = "//input[@id='agreed_to_terms_checkbox']"
     _enroll_in_course_button_bottom_id = "confirm-purchase"
     _card_error_messagexpath = "//*[@class='payment-error-box']/i[@class='fa fa-exclamation-circle']/following-sibling::span[text()='The card was declined.']"
 
@@ -51,18 +53,24 @@ class RegisterCoursesPages(Basepage):
         self.webScroll(self._enroll_in_course_button_bottom_id)
 
     def enterCardNumber(self, card_number):
-        self.webScroll(self._card_number_text_field_xpath, "xpath")
-        self.sendKeys(card_number, self._card_number_text_field_xpath, "xpath")
+        self.webScroll(self._card_number_text_xpath, "xpath")
+        self.switchToFrame(self._common_frame_for_payment_input_fields_xpath.format("__privateStripeFrame8"), "xpath",
+                           info="insideCardNumberFrame")
+        self.sendKeys(card_number, self._card_number_text_field_iframe_xpath, "xpath")
+        self.switchBackToParentFrame()
 
     def enterExpDate(self, card_date):
-        ele = self.getElement(self._card_expiration_date_text_field_css, "cssselector")
-        self.moveMouseTo(element=ele)
-        self.sendKeys(card_date)
+        self.switchToFrame(self._common_frame_for_payment_input_fields_xpath.format("__privateStripeFrame9"), "xpath",
+                           info="expDateFieldFrame")
+        self.sendKeys(card_date, self._card_expiration_date_text_field_xpath, "xpath")
+        self.switchBackToParentFrame()
 
     def enterCvcCode(self, card_cvc):
-        ele = self.getElement(self._card_cvv_text_field_css, "cssselector")
-        self.moveMouseTo(element=ele)
-        self.sendKeys(card_cvc)
+        self.switchToFrame(self._common_frame_for_payment_input_fields_xpath.format("__privateStripeFrame10"), "xpath",
+                           info="expDateFieldFrame")
+        ele = self.getElement(self._card_cvv_text_field_xpath, "xpath")
+        self.sendKeys(card_cvc, element=ele)
+        self.switchBackToParentFrame()
 
     def selectCountry(self, card_country):
         ele = self.getElement(self._card_country_select_box_id)
@@ -70,12 +78,13 @@ class RegisterCoursesPages(Basepage):
         self.select(self._card_country_select_box_id, toSelect=card_country)
 
     def enterPostalCode(self, card_postal_code):
-        ele = self.getElement(self._card_postal_code_text_field_css, "cssselctor")
-        self.moveMouseTo(element=ele)
-        self.sendKeys(card_postal_code, self._card_postal_code_text_field_css, "cssselector")
+        self.switchToFrame("(//iframe)[4]", "xpath",
+                           info="expDateFieldFrame")
+        self.sendKeys(card_postal_code, self._card_postal_code_text_field_xpath, "xpath")
+        self.switchBackToParentFrame()
 
     def selectIAgreeToTerms(self, select=True):
-        ele = self.getElement(self._card_i_agree_radio_button_id)
+        ele = self.getElement(self._card_i_agree_radio_button_xpath,"xpath")
         self.moveMouseTo(element=ele)
         state = self.checkSelected(element=ele)
         if state is False:

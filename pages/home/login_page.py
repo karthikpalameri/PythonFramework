@@ -25,7 +25,8 @@ class LoginPage(Basepage):
 
     def clickLoginLink(self):
         print()
-        self.ptobject.cropElement(self.__class__.__name__, "_login_link", self._login_link, "linktext")
+        # below code will generate the cropped image of the element passed in as parameter
+        # self.ptobject.cropElement(self.__class__.__name__, "_login_link", self._login_link, "linktext")
         self.elementClick(self._login_link, "linktext")
 
     def enterEmail(self, username):
@@ -39,8 +40,9 @@ class LoginPage(Basepage):
 
     def login(self, username="", password=""):
         print()
-        ele = self.ptobject.getElementFromProtoType(page_name="practice", image_name="_login_link.png")
-        self.elementClick(element=ele)
+        # Below code will utilize the prototype module and fetch the element
+        # ele = self.ptobject.getElementFromProtoType(page_name="practice", image_name="_login_link.png")
+        # self.elementClick(element=ele)
         self.clickLoginLink()
         self.enterEmail(username)
         self.enterPassword(password)
@@ -59,3 +61,6 @@ class LoginPage(Basepage):
 
     def verifyLoginTitle(self):
         return self.verifyPageTitle("Google")
+
+    def logout(self):
+        return self.driver.execute_script("$x('//*[@id='navbar']/div/div/div/ul/li[4]/ul/li[5]/a')[0].click()")
